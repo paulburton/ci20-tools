@@ -24,12 +24,14 @@ $(local_out)/ci20-usb-test: objs := $(objs)
 $(local_out)/ci20-usb-test: libs := $(libs)
 $(local_out)/ci20-usb-test: $(objs) $(ci20_lib)
 	@mkdir -p $(dir $@)
-	$(CC) $(LDFLAGS) $(libs) -o $@ $(objs)
+	@echo "CCLD    $@"
+	$(SILENT)$(CC) $(LDFLAGS) $(libs) -o $@ $(objs)
 
 $(objs): $$(patsubst $(local_out)/%.o,usb-test/%.c,$$@) Makefile usb-test/Makefile
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-	$(CC) $(CFLAGS) -MM -c $< -o - | \
+	@echo "CC      $@"
+	$(SILENT)$(CC) $(CFLAGS) -c $< -o $@
+	$(SILENT)$(CC) $(CFLAGS) -MM -c $< -o - | \
 		sed -e 's|^.*:|$@:|' >$@.d
 
 .PHONY: install-usb-test

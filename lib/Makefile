@@ -30,13 +30,15 @@ $(ci20_lib): objs := $(objs)
 $(ci20_lib): libs := $(libs)
 $(ci20_lib): $(objs) $(fw_bin)
 	@mkdir -p $(dir $@)
-	$(CC) $(LDFLAGS) $(libs) -shared -o $@ $(objs) -Wl,--format=binary $(fw_bin) -Wl,--format=default
+	@echo "CCLD    $@"
+	$(SILENT)$(CC) $(LDFLAGS) $(libs) -shared -o $@ $(objs) -Wl,--format=binary $(fw_bin) -Wl,--format=default
 
 $(objs): flags := $(flags)
 $(objs): $$(patsubst $(local_out)/%.o,lib/%.c,$$@) Makefile lib/Makefile
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(flags) -fPIC -c $< -o $@
-	$(CC) $(CFLAGS) $(flags) -fPIC -MM -c $< -o - | \
+	@echo "CC      $@"
+	$(SILENT)$(CC) $(CFLAGS) $(flags) -fPIC -c $< -o $@
+	$(SILENT)$(CC) $(CFLAGS) $(flags) -fPIC -MM -c $< -o - | \
 		sed -e 's|^.*:|$@:|' >$@.d
 
 .PHONY: install-usb

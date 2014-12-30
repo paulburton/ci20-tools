@@ -20,6 +20,13 @@ objcopy_mips := $(CROSS_COMPILE)objcopy
 
 DESTDIR ?= /usr/local
 
+V ?= 0
+ifeq ($(V),1)
+SILENT :=
+else
+SILENT := @
+endif
+
 out := out
 
 .PHONY: all
