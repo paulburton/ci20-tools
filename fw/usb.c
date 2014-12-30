@@ -77,8 +77,18 @@ static void handle_descriptor_request(void)
 			in_data.data = str_product;
 			in_data.size = sizeof(str_product);
 			break;
+
+		default:
+			debug("WARN: unhandled string descriptor 0x");
+			debug_hex(idx, 0);
+			debug("\r\n");
 		}
 		break;
+
+	default:
+		debug("WARN: unhandled descriptor type 0x");
+		debug_hex(type, 0);
+		debug("\r\n");
 	}
 }
 
@@ -88,6 +98,11 @@ static void handle_standard_request(void)
 	case REQ_GET_DESCRIPTOR:
 		handle_descriptor_request();
 		break;
+
+	default:
+		debug("WARN: unhandled standard request 0x");
+		debug_hex(setup_packet.bRequest, 2);
+		debug("\r\n");
 	}
 }
 
