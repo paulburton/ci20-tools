@@ -154,6 +154,9 @@ static void handle_setup_packet(unsigned ep)
 	}
 
 	set_diep_ctl(ep, DEP_ENA_BIT | DEP_CLEAR_NAK);
+
+	if (out_data.size)
+		set_doep_ctl(ep, DEP_ENA_BIT | DEP_CLEAR_NAK);
 }
 
 static void handle_earlysuspend_interrupt(void)
@@ -181,15 +184,7 @@ static void handle_enum_done_interrupt(void)
 static void read_out_data(unsigned ep, unsigned sz)
 {
 	unsigned dwords = DIV_ROUND_UP(sz, 4);
-	unsigned hack_delay = 1000000;
 	uint32_t val;
-
-	/*
-	 * HACK: Without this delay, the reads from the RxFIFO below sometimes return
-	 *       garbage. Figure out why! Have I missed something else to poll?
-	 */
-	while (hack_delay--)
-		asm volatile("");
 
 	while (dwords--) {
 		val = read_ep_fifo(ep);
@@ -296,10 +291,8 @@ static void handle_oep_interrupt(void)
 		ep_intr = read_doep_int(ep);
 		intrs &= ~(1 << ep);
 
-		if (ep_intr & DEP_XFER_COMP) {
+		if (ep_intr & DEP_XFER_COMP)
 			set_doep_int(ep, DEP_XFER_COMP);
-			set_doep_ctl(ep, DEP_ENA_BIT | DEP_CLEAR_NAK);
-		}
 
 		if (ep_intr & DEP_SETUP_PHASE_DONE) {
 			set_doep_int(ep, DEP_SETUP_PHASE_DONE);
