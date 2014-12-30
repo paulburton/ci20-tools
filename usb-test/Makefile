@@ -14,6 +14,7 @@ source_files := \
 
 source := $(addprefix usb-test/,$(source_files))
 objs := $(addprefix $(local_out)/,$(patsubst %.c,%.o,$(source_files)))
+-include $(objs:.o=.o.d)
 
 libs := \
 	-L$(dir $(ci20_lib)) -lci20
@@ -28,6 +29,8 @@ $(local_out)/ci20-usb-test: $(objs) $(ci20_lib)
 $(objs): $$(patsubst $(local_out)/%.o,usb-test/%.c,$$@) Makefile usb-test/Makefile
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -MM -c $< -o - | \
+		sed -e 's|^.*:|$@:|' >$@.d
 
 .PHONY: install-usb-test
 install: install-usb-test

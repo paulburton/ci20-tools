@@ -15,6 +15,7 @@ source_files := \
 
 source := $(addprefix lib/,$(source_files))
 objs := $(addprefix $(local_out)/,$(patsubst %.c,%.o,$(source_files)))
+-include $(objs:.o=.o.d)
 
 ci20_lib := $(local_out)/libci20.so
 
@@ -35,6 +36,8 @@ $(objs): flags := $(flags)
 $(objs): $$(patsubst $(local_out)/%.o,lib/%.c,$$@) Makefile lib/Makefile
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(flags) -fPIC -c $< -o $@
+	$(CC) $(CFLAGS) $(flags) -fPIC -MM -c $< -o - | \
+		sed -e 's|^.*:|$@:|' >$@.d
 
 .PHONY: install-usb
 install: install-usb

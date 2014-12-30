@@ -18,6 +18,8 @@ source_files := \
 
 source := $(addprefix fw/,$(source_files))
 objs := $(addprefix $(local_out)/,$(patsubst %.c,%.o,$(source_files)))
+-include $(local_out)/start.o.d
+-include $(objs:.o=.o.d)
 
 fw_bin := $(local_out)/fw.bin
 fw_elf := $(local_out)/fw.elf
@@ -41,8 +43,12 @@ $(local_out)/start.o: flags := $(flags)
 $(local_out)/start.o: fw/start.S Makefile fw/Makefile
 	@mkdir -p $(dir $@)
 	$(CC_mips) $(CFLAGS) $(flags) -c $< -o $@
+	$(CC_mips) $(CFLAGS) $(flags) -MM -c $< -o - | \
+		sed -e 's|^.*:|$@:|' >$@.d
 
 $(objs): flags := $(flags)
 $(objs): $$(patsubst $(local_out)/%.o,fw/%.c,$$@) Makefile fw/Makefile
 	@mkdir -p $(dir $@)
 	$(CC_mips) $(CFLAGS) $(flags) -c $< -o $@
+	$(CC_mips) $(CFLAGS) $(flags) -MM -c $< -o - | \
+		sed -e 's|^.*:|$@:|' >$@.d
