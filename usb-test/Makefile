@@ -10,7 +10,8 @@
 local_out := $(out)/usb-test
 
 source_files := \
-	main.c
+	main.c \
+	../common/discover.c
 
 source := $(addprefix usb-test/,$(source_files))
 objs := $(addprefix $(local_out)/,$(patsubst %.c,%.o,$(source_files)))

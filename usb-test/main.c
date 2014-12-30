@@ -16,9 +16,7 @@
 
 #include "lib/ci20.h"
 
-static struct ci20_ctx *ctx;
-static struct ci20_dev *dev;
-static struct ci20_otp otp;
+#include "common/discover.h"
 
 static void usage(FILE *f)
 {
@@ -30,34 +28,10 @@ static void usage(FILE *f)
 	fprintf(f, "  --serial=<sn>          Use the board with this serial number\n");
 }
 
-static void discover_cb(struct ci20_ctx *c, struct ci20_dev *_dev, void *user)
-{
-	int serial = *(int *)user;
-	int err;
-
-	err = ci20_read_otp(_dev, &otp);
-	if (err) {
-		fprintf(stderr, "Failed to read OTP\n");
-		return;
-	}
-
-	if ((serial != -1) && (serial != otp.serial)) {
-		/* this is not the board you're looking for */
-		return;
-	}
-
-	if (dev) {
-		fprintf(stderr, "Multiple boards detected. Please specify --serial.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	dev = _dev;
-}
-
 int main(int argc, char *argv[])
 {
 	unsigned i;
-	int ch, serial = -1;
+	int err, ch, serial = -1;
 	struct option options[] = {
 		{ "help", no_argument, NULL, 'h' },
 		{ "serial", required_argument, NULL, 's' },
@@ -83,18 +57,9 @@ int main(int argc, char *argv[])
 		}
 	} while (ch != -1);
 
-	ctx = ci20_init();
-	if (!ctx) {
-		fprintf(stderr, "Failed to initialise libci20\n");
-		return EXIT_FAILURE;
-	}
-
-	ci20_discover(ctx, discover_cb, &serial);
-
-	if (!dev) {
-		fprintf(stderr, "CI20 not found\n");
-		return EXIT_FAILURE;
-	}
+	err = common_init(serial);
+	if (err)
+		return err;
 
 	printf("Serial:           %" PRIu32 "\n", otp.serial);
 	printf("Manufacture date: %" PRIu32 "\n", otp.manufacture_date);
