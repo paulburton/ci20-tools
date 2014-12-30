@@ -98,16 +98,17 @@ DWC2_GEN_IDX_ACCESSORS(0x1000, 0x1000, ep_fifo)
 #define GINTSTS_OEP_INTR		(1 << 19)
 
 /* grxsts[rp] */
-#define GRXSTSP_EPNUM			(0xf << 0)
-#define GRXSTSP_EPNUM_SHIFT		0
-#define GRXSTSP_BYTE_CNT		(0x7ff << 4)
-#define GRXSTSP_BYTE_CNT_SHIFT		4
-#define GRXSTSP_PKSTS			(0xf << 17)
-#define GRXSTSP_PKSTS_GOUT_NAK		(0x1 << 17)
-#define GRXSTSP_PKSTS_GOUT_RECV		(0x2 << 17)
-#define GRXSTSP_PKSTS_TX_COMP		(0x3 << 17)
-#define GRXSTSP_PKSTS_SETUP_COMP	(0x4 << 17)
-#define GRXSTSP_PKSTS_SETUP_RECV	(0x6 << 17)
+#define GRXSTS_EPNUM			(0xf << 0)
+#define GRXSTS_EPNUM_SHIFT		0
+#define GRXSTS_BCNT			(0x7ff << 4)
+#define GRXSTS_BCNT_SHIFT		4
+#define GRXSTS_PKTSTS			(0xf << 17)
+#define GRXSTS_PKTSTS_SHIFT		17
+#define GRXSTS_PKTSTS_GOUT_NAK		0x1
+#define GRXSTS_PKTSTS_OUT_RECV		0x2
+#define GRXSTS_PKTSTS_OUT_COMP		0x3
+#define GRXSTS_PKTSTS_SETUP_COMP	0x4
+#define GRXSTS_PKTSTS_SETUP_RECV	0x6
 
 /* d[io]ep_ctl */
 #define DEP_CLEAR_NAK			(1 << 26)

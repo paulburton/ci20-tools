@@ -211,17 +211,18 @@ static void read_out_data(unsigned ep, unsigned sz)
 static void handle_rxflvl_interrupt(void)
 {
 	uint32_t rxsts = read_grxsts_pop();
-	unsigned sz, ep;
+	unsigned sz, ep, pktsts;
 
-	ep = (rxsts & GRXSTSP_EPNUM) >> GRXSTSP_EPNUM_SHIFT;
+	pktsts = (rxsts & GRXSTS_PKTSTS) >> GRXSTS_PKTSTS_SHIFT;
+	ep = (rxsts & GRXSTS_EPNUM) >> GRXSTS_EPNUM_SHIFT;
 
-	switch (rxsts & GRXSTSP_PKSTS) {
-	case GRXSTSP_PKSTS_GOUT_RECV:
-		sz = (rxsts & GRXSTSP_BYTE_CNT) >> GRXSTSP_BYTE_CNT_SHIFT;
+	switch (pktsts) {
+	case GRXSTS_PKTSTS_OUT_RECV:
+		sz = (rxsts & GRXSTS_BCNT) >> GRXSTS_BCNT_SHIFT;
 		read_out_data(ep, sz);
 		break;
 
-	case GRXSTSP_PKSTS_SETUP_RECV:
+	case GRXSTS_PKTSTS_SETUP_RECV:
 		setup_packet.raw[0] = read_ep_fifo(ep);
 		setup_packet.raw[1] = read_ep_fifo(ep);
 		break;
