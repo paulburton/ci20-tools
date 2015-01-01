@@ -41,7 +41,7 @@ $(objs): $$(patsubst $(local_out)/%.o,lib/%.c,$$@) Makefile lib/Makefile
 	$(SILENT)$(CC) $(CFLAGS) $(flags) -fPIC -MM -c $< -o - | \
 		sed -e 's|^.*:|$@:|' >$@.d
 
-.PHONY: install-usb
-install: install-usb
-install-usb:
-	install -Dm755 $(ci20_lib) $(DESTDIR)/lib/$(notdir $(usb_lib))
+.PHONY: install-lib
+install: install-lib
+install-lib:
+	install -Dm755 $(ci20_lib) $(DESTDIR)/lib/$(notdir $(ci20_lib))
