@@ -37,7 +37,10 @@ clean:
 	rm -rf $(out)
 
 .PHONY: install
-install: all
+install: install-tools
+
+.PHONY: install-tools
+install-tools: all
 
 include fw/Makefile
 include lib/Makefile

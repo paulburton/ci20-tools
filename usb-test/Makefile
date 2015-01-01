@@ -36,7 +36,7 @@ $(objs): $$(patsubst $(local_out)/%.o,usb-test/%.c,$$@) Makefile usb-test/Makefi
 		sed -e 's|^.*:|$@:|' >$@.d
 
 .PHONY: install-usb-test
-install: install-usb-test
+install-tools: install-usb-test
 install-usb-test: local_out := $(local_out)
 install-usb-test:
 	install -Dm755 $(local_out)/ci20-usb-test $(DESTDIR)/bin/ci20-usb-test
