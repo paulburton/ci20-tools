@@ -25,7 +25,7 @@ fw_bin := $(local_out)/fw.bin
 fw_elf := $(local_out)/fw.elf
 
 flags := -mips32r2 -EL -G0 -mno-gpopt -msoft-float -flto
-flags += -ffreestanding -nostdlib
+flags += -ffreestanding -nostdlib -mno-abicalls
 flags += -DDEBUG=$(FW_DEBUG) -ggdb
 
 all: $(fw_bin)
