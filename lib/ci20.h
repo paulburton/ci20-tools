@@ -10,7 +10,9 @@
 #ifndef __usb_ci20_h__
 #define __usb_ci20_h__
 
+#include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 struct ci20_ctx;
 struct ci20_dev;
