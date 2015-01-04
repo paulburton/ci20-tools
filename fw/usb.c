@@ -9,6 +9,7 @@
 
 #include <stddef.h>
 
+#include "cache.h"
 #include "debug.h"
 #include "dwc2.h"
 #include "protocol.h"
@@ -52,6 +53,11 @@ static union {
 		struct ci20_fw_mem_set args;
 		void *base;
 	} mem_set;
+
+	struct {
+		struct ci20_fw_cache_flush args;
+		uint8_t cache;
+	} cache_flush;
 } cmd_data;
 
 static int cmd;
@@ -165,6 +171,52 @@ static void handle_vendor_request(void)
 		debug_hex((uint32_t)out_data.data, 8);
 		debug("\r\n");
 		break;
+
+	case FW_REQ_CACHE_INIT:
+		debug("CACHE_INIT");
+
+		switch (setup_packet.wValue) {
+		case CACHE_D:
+			debug(" DCACHE\r\n");
+			init_dcache();
+			break;
+
+		case CACHE_I:
+			debug(" ICACHE\r\n");
+			init_icache();
+			break;
+
+		default:
+			debug(" unknown=0x");
+			debug_hex(setup_packet.wValue, 0);
+			debug("\r\n");
+			break;
+		}
+		break;
+
+	case FW_REQ_CACHE_FLUSH:
+		debug("CACHE_FLUSH");
+
+		out_data.data = (void *)&cmd_data.cache_flush.args;
+		out_data.size = sizeof(cmd_data.cache_flush.args);
+		cmd_data.cache_flush.cache = setup_packet.wValue;
+
+		switch (setup_packet.wValue) {
+		case CACHE_D:
+			debug(" DCACHE\r\n");
+			break;
+
+		case CACHE_I:
+			debug(" ICACHE\r\n");
+			break;
+
+		default:
+			debug(" unknown=0x");
+			debug_hex(setup_packet.wValue, 0);
+			debug("\r\n");
+			break;
+		}
+		break;
 	}
 }
 
@@ -260,6 +312,20 @@ static void read_out_data(unsigned ep, unsigned sz)
 	case FW_REQ_MEM_SET:
 		memset(cmd_data.mem_set.base, cmd_data.mem_set.args.c,
 		       cmd_data.mem_set.args.length);
+		break;
+
+	case FW_REQ_CACHE_FLUSH:
+		switch (cmd_data.cache_flush.cache) {
+		case CACHE_D:
+			flush_dcache(cmd_data.cache_flush.args.base,
+				     cmd_data.cache_flush.args.size);
+			break;
+
+		case CACHE_I:
+			flush_icache(cmd_data.cache_flush.args.base,
+				     cmd_data.cache_flush.args.size);
+			break;
+		}
 		break;
 	}
 }

@@ -23,11 +23,23 @@ enum {
 	FW_REQ_MEM_READ,
 	FW_REQ_MEM_WRITE,
 	FW_REQ_MEM_SET,
+	FW_REQ_CACHE_INIT,
+	FW_REQ_CACHE_FLUSH,
 };
 
 struct ci20_fw_mem_set {
 	uint32_t length;
 	uint32_t c;
+};
+
+enum {
+	CACHE_D,
+	CACHE_I,
+};
+
+struct ci20_fw_cache_flush {
+	uint32_t base;
+	uint32_t size;
 };
 
 #endif /* __FW_PROTOCOL_H__ */

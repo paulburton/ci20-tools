@@ -12,6 +12,7 @@ FW_DEBUG ?= 0
 local_out := $(out)/fw
 
 source_files := \
+	cache.c \
 	main.c \
 	uart.c \
 	usb.c
