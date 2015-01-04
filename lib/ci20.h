@@ -88,6 +88,10 @@ extern int ci20_mtc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t 
 
 extern int ci20_set_k0_cca(struct ci20_dev *dev, unsigned cca);
 
+extern int ci20_load_elf(struct ci20_dev *dev, const void *base, uint32_t *entry);
+extern int ci20_load_elf_fd(struct ci20_dev *dev, int filedes, uint32_t *entry);
+extern int ci20_load_elf_path(struct ci20_dev *dev, const char *path, uint32_t *entry);
+
 extern int ci20_jump(struct ci20_dev *dev, uint32_t addr);
 
 /**
