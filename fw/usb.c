@@ -10,6 +10,7 @@
 #include <stddef.h>
 
 #include "cache.h"
+#include "cop0.h"
 #include "debug.h"
 #include "dwc2.h"
 #include "protocol.h"
@@ -58,6 +59,15 @@ static union {
 		struct ci20_fw_cache_flush args;
 		uint8_t cache;
 	} cache_flush;
+
+	struct {
+		uint32_t value;
+	} mfc0;
+
+	struct {
+		unsigned reg, sel;
+		uint32_t value;
+	} mtc0;
 } cmd_data;
 
 static int cmd;
@@ -217,6 +227,34 @@ static void handle_vendor_request(void)
 			break;
 		}
 		break;
+
+	case FW_REQ_MFC0:
+		debug("MFC0 reg=0x");
+		debug_hex(setup_packet.wValue, 0);
+		debug(" sel=0x");
+		debug_hex(setup_packet.wIndex, 0);
+		debug("\r\n");
+
+		cmd_data.mfc0.value = dynamic_mfc0(setup_packet.wValue,
+						   setup_packet.wIndex);
+
+		in_data.data = &cmd_data.mfc0.value;
+		in_data.size = sizeof(cmd_data.mfc0.value);
+		break;
+
+	case FW_REQ_MTC0:
+		debug("MTC0 reg=0x");
+		debug_hex(setup_packet.wValue, 0);
+		debug(" sel=0x");
+		debug_hex(setup_packet.wIndex, 0);
+		debug("\r\n");
+
+		cmd_data.mtc0.reg = setup_packet.wValue;
+		cmd_data.mtc0.sel = setup_packet.wIndex;
+
+		out_data.data = &cmd_data.mtc0.value;
+		out_data.size = sizeof(cmd_data.mtc0.value);
+		break;
 	}
 }
 
@@ -326,6 +364,11 @@ static void read_out_data(unsigned ep, unsigned sz)
 				     cmd_data.cache_flush.args.size);
 			break;
 		}
+		break;
+
+	case FW_REQ_MTC0:
+		dynamic_mtc0(cmd_data.mtc0.reg, cmd_data.mtc0.sel,
+			     cmd_data.mtc0.value);
 		break;
 	}
 }
