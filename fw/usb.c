@@ -68,6 +68,10 @@ static union {
 		unsigned reg, sel;
 		uint32_t value;
 	} mtc0;
+
+	struct {
+		uintptr_t addr;
+	} jump;
 } cmd_data;
 
 static int cmd;
@@ -255,11 +259,20 @@ static void handle_vendor_request(void)
 		out_data.data = &cmd_data.mtc0.value;
 		out_data.size = sizeof(cmd_data.mtc0.value);
 		break;
+
+	case FW_REQ_JUMP:
+		debug("JUMP addr=0x");
+		debug_hex(u32val, 8);
+		debug("\r\n");
+
+		cmd_data.jump.addr = u32val;
+		break;
 	}
 }
 
 static void handle_setup_packet(unsigned ep)
 {
+	void (*fn_ptr)(unsigned a0, unsigned a1, unsigned a2, unsigned a3);
 	unsigned type = (setup_packet.bmRequestType >> 5) & 0x3;
 	unsigned pkt_cnt;
 
@@ -287,6 +300,11 @@ static void handle_setup_packet(unsigned ep)
 
 	if (out_data.size)
 		set_doep_ctl(ep, DEP_ENA_BIT | DEP_CLEAR_NAK);
+
+	if (cmd == FW_REQ_JUMP) {
+		fn_ptr = (void *)cmd_data.jump.addr;
+		fn_ptr(0, 0, 0, 0);
+	}
 }
 
 static void handle_earlysuspend_interrupt(void)

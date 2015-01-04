@@ -27,6 +27,7 @@ enum {
 	FW_REQ_CACHE_FLUSH,
 	FW_REQ_MFC0,
 	FW_REQ_MTC0,
+	FW_REQ_JUMP,
 };
 
 struct ci20_fw_mem_set {
