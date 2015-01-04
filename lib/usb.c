@@ -316,3 +316,10 @@ int ci20_usb_mtc0(struct ci20_usb_dev *dev, unsigned reg, unsigned sel, uint32_t
 
 	return 0;
 }
+
+int ci20_usb_jump(struct ci20_usb_dev *dev, uint32_t addr)
+{
+	return libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_JUMP, addr >> 16, addr, NULL, 0, dev->timeout);
+}

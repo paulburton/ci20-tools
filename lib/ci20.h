@@ -84,6 +84,8 @@ extern int ci20_icache_flush(struct ci20_dev *dev, uint32_t base, uint32_t size)
 extern int ci20_mfc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t *val);
 extern int ci20_mtc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t val);
 
+extern int ci20_jump(struct ci20_dev *dev, uint32_t addr);
+
 /**
  * ci20_manufacturer_long - retrieve long manufacturer name from short
  * @mfr: The short manufacturer name, as read from the OTP.
