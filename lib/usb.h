@@ -36,4 +36,6 @@ extern void ci20_usb_close(struct ci20_usb_dev *dev);
 extern int ci20_usb_readmem(struct ci20_usb_dev *dev, void *buf, size_t sz, uint32_t addr);
 extern int ci20_usb_writemem(struct ci20_usb_dev *dev, const void *buf, size_t sz, uint32_t addr);
 
+extern int ci20_usb_memset(struct ci20_usb_dev *dev, uint32_t addr, uint8_t c, size_t n);
+
 #endif /* __usb_usb_h__ */

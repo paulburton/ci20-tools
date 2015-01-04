@@ -207,5 +207,26 @@ int ci20_usb_writemem(struct ci20_usb_dev *dev, const void *buf, size_t sz, uint
 		return err;
 	if (err != sz)
 		return -EIO;
+
+	return 0;
+}
+
+int ci20_usb_memset(struct ci20_usb_dev *dev, uint32_t addr, uint8_t c, size_t n)
+{
+	struct ci20_fw_mem_set args = {
+		.c = c,
+		.length = n,
+	};
+	int err;
+
+	err = libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_MEM_SET, addr >> 16, addr, (unsigned char *)&args, sizeof(args),
+		dev->timeout);
+	if (err < 0)
+		return err;
+	if (err != sizeof(args))
+		return err;
+
 	return 0;
 }

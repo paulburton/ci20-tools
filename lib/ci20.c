@@ -98,6 +98,11 @@ int ci20_writel(struct ci20_dev *dev, uint32_t val, uint32_t addr)
 	return ci20_writemem(dev, &val, sizeof(val), addr);
 }
 
+int ci20_memset(struct ci20_dev *dev, uint32_t addr, uint8_t c, size_t n)
+{
+	return ci20_usb_memset(dev->usb_dev, addr, c, n);
+}
+
 int ci20_read_otp(struct ci20_dev *dev, struct ci20_otp *otp)
 {
 	int err;

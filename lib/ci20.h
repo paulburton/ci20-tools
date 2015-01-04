@@ -65,6 +65,8 @@ extern int ci20_readl(struct ci20_dev *dev, uint32_t *val, uint32_t addr);
 extern int ci20_writemem(struct ci20_dev *dev, const void *buf, size_t sz, uint32_t addr);
 extern int ci20_writel(struct ci20_dev *dev, uint32_t val, uint32_t addr);
 
+extern int ci20_memset(struct ci20_dev *dev, uint32_t addr, uint8_t c, size_t n);
+
 extern int ci20_read_otp(struct ci20_dev *dev, struct ci20_otp *otp);
 
 extern int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20_pin_func func);
