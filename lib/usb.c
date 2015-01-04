@@ -14,6 +14,7 @@
 #include "fw/protocol.h"
 
 #include "usb.h"
+#include "util.h"
 
 /* Ingenic boot ROM vendor requests */
 #define INGENIC_VR_GET_CPU_INFO		0x00
@@ -198,15 +199,20 @@ int ci20_usb_readmem(struct ci20_usb_dev *dev, void *buf, size_t sz, uint32_t ad
 
 int ci20_usb_writemem(struct ci20_usb_dev *dev, const void *buf, size_t sz, uint32_t addr)
 {
+	const unsigned max = 64;
 	int err;
 
 	err = libusb_control_transfer(dev->hnd,
 		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-		FW_REQ_MEM_WRITE, addr >> 16, addr, (unsigned char *)buf, sz, dev->timeout);
+		FW_REQ_MEM_WRITE, addr >> 16, addr, (unsigned char *)buf, min(sz, max),
+		dev->timeout);
 	if (err < 0)
 		return err;
-	if (err != sz)
+	if (err != min(sz, max))
 		return -EIO;
+
+	if (sz > max)
+		return ci20_usb_writemem(dev, buf + max, sz - max, addr + max);
 
 	return 0;
 }
