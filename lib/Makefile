@@ -11,6 +11,7 @@ local_out := $(out)/lib
 
 source_files := \
 	ci20.c \
+	pll.c \
 	usb.c
 
 source := $(addprefix lib/,$(source_files))

@@ -34,6 +34,26 @@ enum ci20_pin_func {
 	PIN_GPIO_OUT_HIGH,
 };
 
+enum ci20_pll {
+	PLL_A = 0,
+	PLL_M,
+	PLL_E,
+	PLL_V,
+};
+
+enum ci20_cpu_clk {
+	CPU_CLK_NONE = 0,
+	CPU_CLK_SCLK_A,
+	CPU_CLK_PLL_M,
+	CPU_CLK_PLL_E,
+};
+
+enum ci20_ddr_clk {
+	DDR_CLK_NONE = 0,
+	DDR_CLK_SCLK_A,
+	DDR_CLK_PLL_M,
+};
+
 extern struct ci20_ctx *ci20_init(void);
 extern void ci20_fini(struct ci20_ctx *c);
 
@@ -48,6 +68,10 @@ extern int ci20_writel(struct ci20_dev *dev, uint32_t val, uint32_t addr);
 extern int ci20_read_otp(struct ci20_dev *dev, struct ci20_otp *otp);
 
 extern int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20_pin_func func);
+
+extern int ci20_pll_init(struct ci20_dev *dev, enum ci20_pll pll, unsigned m, unsigned n, unsigned od);
+extern int ci20_mux_cpu_clk(struct ci20_dev *dev, enum ci20_cpu_clk clk);
+extern int ci20_mux_ddr_clk(struct ci20_dev *dev, enum ci20_ddr_clk clk, unsigned div);
 
 /**
  * ci20_manufacturer_long - retrieve long manufacturer name from short
