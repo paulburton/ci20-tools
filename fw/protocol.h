@@ -10,6 +10,8 @@
 #ifndef __FW_PROTOCOL_H__
 #define __FW_PROTOCOL_H__
 
+#include <stdint.h>
+
 #define FW_VERSION 0
 #define FW_CPU_INFO "lci20-00"
 
@@ -20,6 +22,12 @@ enum {
 	/* Custom protocol */
 	FW_REQ_MEM_READ,
 	FW_REQ_MEM_WRITE,
+	FW_REQ_MEM_SET,
+};
+
+struct ci20_fw_mem_set {
+	uint32_t length;
+	uint32_t c;
 };
 
 #endif /* __FW_PROTOCOL_H__ */

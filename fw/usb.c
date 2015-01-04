@@ -1,11 +1,13 @@
 /*
  * libci20 Firmware
- * Copyright (C) 2014 Paul Burton <paulburton89@gmail.com>
+ * Copyright (C) 2014-2015 Paul Burton <paulburton89@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+
+#include <stddef.h>
 
 #include "debug.h"
 #include "dwc2.h"
@@ -44,6 +46,15 @@ static struct {
 	const void *data;
 	uint32_t size;
 } out_data;
+
+static union {
+	struct {
+		struct ci20_fw_mem_set args;
+		void *base;
+	} mem_set;
+} cmd_data;
+
+static int cmd;
 
 static const char cpu_info[8] __attribute__((aligned(4))) = FW_CPU_INFO;
 
@@ -110,10 +121,12 @@ static void handle_vendor_request(void)
 {
 	uint32_t u32val;
 
+	cmd = setup_packet.bRequest;
+
 	u32val = (uint32_t)setup_packet.wValue << 16;
 	u32val |= setup_packet.wIndex;
 
-	switch (setup_packet.bRequest) {
+	switch (cmd) {
 	case FW_REQ_GET_CPU_INFO:
 		in_data.data = cpu_info;
 		in_data.size = sizeof(cpu_info);
@@ -142,6 +155,16 @@ static void handle_vendor_request(void)
 		debug_hex(out_data.size, 0);
 		debug("\r\n");
 		break;
+
+	case FW_REQ_MEM_SET:
+		out_data.data = (void *)&cmd_data.mem_set;
+		out_data.size = sizeof(cmd_data.mem_set.args);
+		cmd_data.mem_set.base = (void *)u32val;
+
+		debug("MEM_SET addr=0x");
+		debug_hex((uint32_t)out_data.data, 8);
+		debug("\r\n");
+		break;
 	}
 }
 
@@ -149,6 +172,8 @@ static void handle_setup_packet(unsigned ep)
 {
 	unsigned type = (setup_packet.bmRequestType >> 5) & 0x3;
 	unsigned pkt_cnt;
+
+	cmd = -1;
 
 	switch (type) {
 	case 0:
@@ -196,6 +221,17 @@ static void handle_enum_done_interrupt(void)
 	set_gint_sts(GINTSTS_ENUM_DONE);
 }
 
+static void *memset(void *s, int c, size_t n)
+{
+	uint8_t *pchar = s;
+	size_t i;
+
+	for (i = 0; i < n; i++)
+		pchar[i] = c;
+
+	return s;
+}
+
 static void read_out_data(unsigned ep, unsigned sz)
 {
 	unsigned dwords = DIV_ROUND_UP(sz, 4);
@@ -215,6 +251,16 @@ static void read_out_data(unsigned ep, unsigned sz)
 		} else {
 			/* TODO */
 		}
+	}
+
+	if (out_data.size)
+		return;
+
+	switch (cmd) {
+	case FW_REQ_MEM_SET:
+		memset(cmd_data.mem_set.base, cmd_data.mem_set.args.c,
+		       cmd_data.mem_set.args.length);
+		break;
 	}
 }
 
