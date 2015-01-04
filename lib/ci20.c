@@ -220,6 +220,21 @@ int ci20_mtc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t val)
 	return ci20_usb_mtc0(dev->usb_dev, reg, sel, val);
 }
 
+int ci20_set_k0_cca(struct ci20_dev *dev, unsigned cca)
+{
+	uint32_t val;
+	int err;
+
+	err = ci20_mfc0(dev, 16, 0, &val);
+	if (err)
+		return err;
+
+	val &= ~0x7;
+	val |= cca;
+
+	return ci20_mtc0(dev, 16, 0, val);
+}
+
 int ci20_jump(struct ci20_dev *dev, uint32_t addr)
 {
 	return ci20_usb_jump(dev->usb_dev, addr);

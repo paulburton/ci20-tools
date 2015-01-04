@@ -84,6 +84,8 @@ extern int ci20_icache_flush(struct ci20_dev *dev, uint32_t base, uint32_t size)
 extern int ci20_mfc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t *val);
 extern int ci20_mtc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t val);
 
+extern int ci20_set_k0_cca(struct ci20_dev *dev, unsigned cca);
+
 extern int ci20_jump(struct ci20_dev *dev, uint32_t addr);
 
 /**
