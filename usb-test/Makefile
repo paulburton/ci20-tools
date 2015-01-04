@@ -10,8 +10,7 @@
 local_out := $(out)/usb-test
 
 source_files := \
-	main.c \
-	../common/discover.c
+	main.c
 
 source := $(addprefix usb-test/,$(source_files))
 objs := $(addprefix $(local_out)/,$(patsubst %.c,%.o,$(source_files)))
@@ -23,10 +22,10 @@ libs := \
 all: $(local_out)/ci20-usb-test
 $(local_out)/ci20-usb-test: objs := $(objs)
 $(local_out)/ci20-usb-test: libs := $(libs)
-$(local_out)/ci20-usb-test: $(objs) $(ci20_lib)
+$(local_out)/ci20-usb-test: $(objs) $(ci20_lib) $(common_lib)
 	@mkdir -p $(dir $@)
 	@echo "CCLD    $@"
-	$(SILENT)$(CC) $(LDFLAGS) $(libs) -o $@ $(objs)
+	$(SILENT)$(CC) $(LDFLAGS) $(libs) -o $@ $(objs) $(common_lib)
 
 $(objs): $$(patsubst $(local_out)/%.o,usb-test/%.c,$$@) Makefile usb-test/Makefile
 	@mkdir -p $(dir $@)

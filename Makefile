@@ -9,6 +9,7 @@
 
 .SECONDEXPANSION:
 
+AR := ar
 CC := gcc
 CFLAGS := -Wall -Werror -O2 -I.
 LDFLAGS :=
@@ -44,4 +45,5 @@ install-tools: all
 
 include fw/Makefile
 include lib/Makefile
+include usb-common/Makefile
 include usb-test/Makefile

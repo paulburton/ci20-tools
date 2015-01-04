@@ -16,7 +16,7 @@
 
 #include "lib/ci20.h"
 
-#include "common/discover.h"
+#include "usb-common/discover.h"
 
 static void usage(FILE *f)
 {
