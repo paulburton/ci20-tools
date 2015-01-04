@@ -284,3 +284,35 @@ int ci20_usb_icache_flush(struct ci20_usb_dev *dev, uint32_t base, uint32_t size
 
 	return 0;
 }
+
+int ci20_usb_mfc0(struct ci20_usb_dev *dev, unsigned reg, unsigned sel, uint32_t *val)
+{
+	int err;
+
+	err = libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_MFC0, reg, sel, (unsigned char *)val, sizeof(*val),
+		dev->timeout);
+	if (err < 0)
+		return err;
+	if (err != sizeof(*val))
+		return err;
+
+	return 0;
+}
+
+int ci20_usb_mtc0(struct ci20_usb_dev *dev, unsigned reg, unsigned sel, uint32_t val)
+{
+	int err;
+
+	err = libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_MTC0, reg, sel, (unsigned char *)&val, sizeof(val),
+		dev->timeout);
+	if (err < 0)
+		return err;
+	if (err != sizeof(val))
+		return err;
+
+	return 0;
+}

@@ -209,3 +209,13 @@ int ci20_icache_flush(struct ci20_dev *dev, uint32_t base, uint32_t size)
 {
 	return ci20_usb_icache_flush(dev->usb_dev, base, size);
 }
+
+int ci20_mfc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t *val)
+{
+	return ci20_usb_mfc0(dev->usb_dev, reg, sel, val);
+}
+
+int ci20_mtc0(struct ci20_dev *dev, unsigned reg, unsigned sel, uint32_t val)
+{
+	return ci20_usb_mtc0(dev->usb_dev, reg, sel, val);
+}

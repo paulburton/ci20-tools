@@ -44,4 +44,7 @@ extern int ci20_usb_icache_init(struct ci20_usb_dev *dev);
 extern int ci20_usb_dcache_flush(struct ci20_usb_dev *dev, uint32_t base, uint32_t size);
 extern int ci20_usb_icache_flush(struct ci20_usb_dev *dev, uint32_t base, uint32_t size);
 
+extern int ci20_usb_mfc0(struct ci20_usb_dev *dev, unsigned reg, unsigned sel, uint32_t *val);
+extern int ci20_usb_mtc0(struct ci20_usb_dev *dev, unsigned reg, unsigned sel, uint32_t val);
+
 #endif /* __usb_usb_h__ */
