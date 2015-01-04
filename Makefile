@@ -46,4 +46,5 @@ install-tools: all
 include fw/Makefile
 include lib/Makefile
 include usb-common/Makefile
+include usb-boot/Makefile
 include usb-test/Makefile
