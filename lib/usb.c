@@ -230,3 +230,57 @@ int ci20_usb_memset(struct ci20_usb_dev *dev, uint32_t addr, uint8_t c, size_t n
 
 	return 0;
 }
+
+int ci20_usb_dcache_init(struct ci20_usb_dev *dev)
+{
+	return libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_CACHE_INIT, CACHE_D, 0, NULL, 0, dev->timeout);
+}
+
+int ci20_usb_icache_init(struct ci20_usb_dev *dev)
+{
+	return libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_CACHE_INIT, CACHE_I, 0, NULL, 0, dev->timeout);
+}
+
+int ci20_usb_dcache_flush(struct ci20_usb_dev *dev, uint32_t base, uint32_t size)
+{
+	struct ci20_fw_cache_flush args = {
+		.base = base,
+		.size = size,
+	};
+	int err;
+
+	err = libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_CACHE_FLUSH, CACHE_D, 0, (unsigned char *)&args, sizeof(args),
+		dev->timeout);
+	if (err < 0)
+		return err;
+	if (err != sizeof(args))
+		return err;
+
+	return 0;
+}
+
+int ci20_usb_icache_flush(struct ci20_usb_dev *dev, uint32_t base, uint32_t size)
+{
+	struct ci20_fw_cache_flush args = {
+		.base = base,
+		.size = size,
+	};
+	int err;
+
+	err = libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_CACHE_FLUSH, CACHE_I, 0, (unsigned char *)&args, sizeof(args),
+		dev->timeout);
+	if (err < 0)
+		return err;
+	if (err != sizeof(args))
+		return err;
+
+	return 0;
+}

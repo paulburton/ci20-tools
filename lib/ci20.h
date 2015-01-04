@@ -75,6 +75,12 @@ extern int ci20_pll_init(struct ci20_dev *dev, enum ci20_pll pll, unsigned m, un
 extern int ci20_mux_cpu_clk(struct ci20_dev *dev, enum ci20_cpu_clk clk);
 extern int ci20_mux_ddr_clk(struct ci20_dev *dev, enum ci20_ddr_clk clk, unsigned div);
 
+extern int ci20_dcache_init(struct ci20_dev *dev);
+extern int ci20_icache_init(struct ci20_dev *dev);
+
+extern int ci20_dcache_flush(struct ci20_dev *dev, uint32_t base, uint32_t size);
+extern int ci20_icache_flush(struct ci20_dev *dev, uint32_t base, uint32_t size);
+
 /**
  * ci20_manufacturer_long - retrieve long manufacturer name from short
  * @mfr: The short manufacturer name, as read from the OTP.

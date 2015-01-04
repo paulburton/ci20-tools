@@ -189,3 +189,23 @@ int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20
 
 	return err;
 }
+
+int ci20_dcache_init(struct ci20_dev *dev)
+{
+	return ci20_usb_dcache_init(dev->usb_dev);
+}
+
+int ci20_icache_init(struct ci20_dev *dev)
+{
+	return ci20_usb_icache_init(dev->usb_dev);
+}
+
+int ci20_dcache_flush(struct ci20_dev *dev, uint32_t base, uint32_t size)
+{
+	return ci20_usb_dcache_flush(dev->usb_dev, base, size);
+}
+
+int ci20_icache_flush(struct ci20_dev *dev, uint32_t base, uint32_t size)
+{
+	return ci20_usb_icache_flush(dev->usb_dev, base, size);
+}

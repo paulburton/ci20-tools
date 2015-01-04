@@ -38,4 +38,10 @@ extern int ci20_usb_writemem(struct ci20_usb_dev *dev, const void *buf, size_t s
 
 extern int ci20_usb_memset(struct ci20_usb_dev *dev, uint32_t addr, uint8_t c, size_t n);
 
+extern int ci20_usb_dcache_init(struct ci20_usb_dev *dev);
+extern int ci20_usb_icache_init(struct ci20_usb_dev *dev);
+
+extern int ci20_usb_dcache_flush(struct ci20_usb_dev *dev, uint32_t base, uint32_t size);
+extern int ci20_usb_icache_flush(struct ci20_usb_dev *dev, uint32_t base, uint32_t size);
+
 #endif /* __usb_usb_h__ */
