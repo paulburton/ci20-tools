@@ -11,6 +11,7 @@ local_out := $(out)/lib
 
 source_files := \
 	ci20.c \
+	ddr.c \
 	pll.c \
 	usb.c
 

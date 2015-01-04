@@ -1,0 +1,188 @@
+/*
+ * libci20
+ * Copyright (C) 2015 Paul Burton <paulburton89@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+#ifndef __COMMON_DDR_CONTROLLER_H__
+#define __COMMON_DDR_CONTROLLER_H__
+
+#include "reg-accessors.h"
+
+#define DDRC_BASE 0xb3010000
+
+#define DDRC_GEN_ACCESSORS(offset, name) \
+	GEN_ACCESSORS(DDRC_BASE + (offset), ddrc_##name)
+
+#define DDRC_GEN_IDX_ACCESSORS(offset, stride, name) \
+	GEN_IDX_ACCESSORS(DDRC_BASE + (offset), stride, ddrc_##name)
+
+DDRC_GEN_ACCESSORS(0x000, dstatus)
+DDRC_GEN_ACCESSORS(0x004, dcfg)
+DDRC_GEN_ACCESSORS(0x008, dctrl)
+DDRC_GEN_ACCESSORS(0x00c, dlmr)
+DDRC_GEN_ACCESSORS(0x018, drefcnt)
+DDRC_GEN_ACCESSORS(0x024, dmmap0)
+DDRC_GEN_ACCESSORS(0x028, dmmap1)
+DDRC_GEN_ACCESSORS(0x034, dstrb)
+DDRC_GEN_ACCESSORS(0x060, dtiming1)
+DDRC_GEN_ACCESSORS(0x064, dtiming2)
+DDRC_GEN_ACCESSORS(0x068, dtiming3)
+DDRC_GEN_ACCESSORS(0x06c, dtiming4)
+DDRC_GEN_ACCESSORS(0x070, dtiming5)
+DDRC_GEN_ACCESSORS(0x074, dtiming6)
+DDRC_GEN_ACCESSORS(0x07c, chqos0)
+DDRC_GEN_ACCESSORS(0x080, chqos1)
+DDRC_GEN_ACCESSORS(0x084, chqos2)
+DDRC_GEN_ACCESSORS(0x088, chqos3)
+DDRC_GEN_ACCESSORS(0x08c, chqos4)
+DDRC_GEN_ACCESSORS(0x090, chqos5)
+DDRC_GEN_ACCESSORS(0x094, chqos6)
+DDRC_GEN_IDX_ACCESSORS(0x98, 0x4, dremap)
+DDRC_GEN_ACCESSORS(0x0bc, ddlp)
+DDRC_GEN_ACCESSORS(0x100, wcmdctrl1)
+DDRC_GEN_ACCESSORS(0x104, rcmdctrl0)
+DDRC_GEN_ACCESSORS(0x108, rcmdctrl1)
+DDRC_GEN_ACCESSORS(0x114, wdatthd0)
+DDRC_GEN_ACCESSORS(0x118, wdatthd1)
+DDRC_GEN_ACCESSORS(0x128, iportpri)
+
+#undef DDRC_GEN_ACCESSORS
+
+/* DSTATUS */
+#define DDRC_DSTATUS_ENDIAN		(1 << 7)
+#define DDRC_DSTATUS_MISS		(1 << 6)
+#define DDRC_DSTATUS_DPDN		(1 << 5)
+#define DDRC_DSTATUS_PDN		(1 << 4)
+#define DDRC_DSTATUS_AREF		(1 << 3)
+#define DDRC_DSTATUS_SREF		(1 << 2)
+#define DDRC_DSTATUS_CKE0		(1 << 0)
+
+/* DCFG */
+#define DDRC_DCFG_ROW1			(0x7 << 27)
+#define DDRC_DCFG_ROW1_SHIFT		27
+#define DDRC_DCFG_COL1			(0x7 << 24)
+#define DDRC_DCFG_COL1_SHIFT		24
+#define DDRC_DCFG_BA1			(1 << 23)
+#define DDRC_DCFG_IMBA			(1 << 22)
+#define DDRC_DCFG_BSL			(1 << 21)
+#define DDRC_DCFG_TYPE			(0x7 << 17)
+#define DDRC_DCFG_TYPE_SHIFT		17
+#define  DDRC_DCFG_TYPE_DDR3		6
+#define DDRC_DCFG_ODTEN			(1 << 16)
+#define DDRC_DCFG_MISPE			(1 << 15)
+#define DDRC_DCFG_ROW0			(0x7 << 11)
+#define DDRC_DCFG_ROW0_SHIFT		11
+#define DDRC_DCFG_COL0			(0x7 << 8)
+#define DDRC_DCFG_COL0_SHIFT		8
+#define DDRC_DCFG_CS1EN			(1 << 7)
+#define DDRC_DCFG_CS0EN			(1 << 6)
+#define DDRC_DCFG_CL			(0xf << 2)
+#define DDRC_DCFG_CL_SHIFT		2
+#define DDRC_DCFG_BA0			(1 << 1)
+#define DDRC_DCFG_DW			(1 << 0)
+
+/* DCTRL */
+#define DDRC_DCTRL_DFI_RST		(1 << 23)
+#define DDRC_DCTRL_DLL_RST		(1 << 22)
+#define DDRC_DCTRL_CTL_RST		(1 << 21)
+#define DDRC_DCTRL_CFG_RST		(1 << 20)
+#define DDRC_DCTRL_KEEPSR		(1 << 17)
+#define DDRC_DCTRL_ACTPD		(1 << 15)
+#define DDRC_DCTRL_PDT			(0x3 << 12)
+#define DDRC_DCTRL_PDT_SHIFT		12
+#define DDRC_DCTRL_ACTSTP		(1 << 11)
+#define DDRC_DCTRL_DPD			(1 << 6)
+#define DDRC_DCTRL_SR			(1 << 5)
+#define DDRC_DCTRL_UNALIGN		(1 << 4)
+#define DDRC_DCTRL_ALH			(1 << 3)
+#define DDRC_DCTRL_CKE			(1 << 1)
+#define DDRC_DCTRL_RESET		(1 << 0)
+
+/* DREFCNT */
+#define DDRC_DREFCNT_CON		(0xff << 16)
+#define DDRC_DREFCNT_CON_SHIFT		16
+#define DDRC_DREFCNT_CNT		(0xff << 8)
+#define DDRC_DREFCNT_CNT_SHIFT		8
+#define DDRC_DREFCNT_CLK_DIV		(0x7 << 1)
+#define DDRC_DREFCNT_CLK_DIV_SHIFT	1
+#define DDRC_DREFCNT_REF_EN		(1 << 0)
+
+/* DMMAP[01] */
+#define DDRC_DMMAPX_BASE		(0xff << 8)
+#define DDRC_DMMAPX_BASE_SHIFT		8
+#define DDRC_DMMAPX_MASK		(0xff << 0)
+#define DDRC_DMMAPX_MASK_SHIFT		0
+
+/* DTIMING1 */
+#define DDRC_DTIMING1_TRTP		(0x3f << 24)
+#define DDRC_DTIMING1_TRTP_SHIFT	24
+#define DDRC_DTIMING1_TWTR		(0x3f << 16)
+#define DDRC_DTIMING1_TWTR_SHIFT	16
+#define DDRC_DTIMING1_TWR		(0x3f << 8)
+#define DDRC_DTIMING1_TWR_SHIFT		8
+#define DDRC_DTIMING1_TWL		(0x3f << 0)
+#define DDRC_DTIMING1_TWL_SHIFT		0
+
+/* DTIMING2 */
+#define DDRC_DTIMING2_TCCD		(0x3f << 24)
+#define DDRC_DTIMING2_TCCD_SHIFT	24
+#define DDRC_DTIMING2_TRAS		(0x3f << 16)
+#define DDRC_DTIMING2_TRAS_SHIFT	16
+#define DDRC_DTIMING2_TRCD		(0x3f << 8)
+#define DDRC_DTIMING2_TRCD_SHIFT	8
+#define DDRC_DTIMING2_TRL		(0x3f << 0)
+#define DDRC_DTIMING2_TRL_SHIFT		0
+
+/* DTIMING3 */
+#define DDRC_DTIMING3_ONUM		(0xf << 27)
+#define DDRC_DTIMING3_ONUM_SHIFT	27
+#define DDRC_DTIMING3_TCKSRE		(0x7 << 24)
+#define DDRC_DTIMING3_TCKSRE_SHIFT	24
+#define DDRC_DTIMING3_TRP		(0x3f << 16)
+#define DDRC_DTIMING3_TRP_SHIFT		16
+#define DDRC_DTIMING3_TRRD		(0x3f << 8)
+#define DDRC_DTIMING3_TRRD_SHIFT	8
+#define DDRC_DTIMING3_TRC		(0x3f << 0)
+#define DDRC_DTIMING3_TRC_SHIFT		0
+
+/* DTIMING4 */
+#define DDRC_DTIMING4_TRFC		(0x3f << 24)
+#define DDRC_DTIMING4_TRFC_SHIFT	24
+#define DDRC_DTIMING4_TEXTRW		(0x7 << 21)
+#define DDRC_DTIMING4_TEXTRW_SHIFT	21
+#define DDRC_DTIMING4_TRWCOV		(0x3 << 19)
+#define DDRC_DTIMING4_TRWCOV_SHIFT	19
+#define DDRC_DTIMING4_TCKE		(0x7 << 16)
+#define DDRC_DTIMING4_TCKE_SHIFT	16
+#define DDRC_DTIMING4_TMINSR		(0xf << 8)
+#define DDRC_DTIMING4_TMINSR_SHIFT	8
+#define DDRC_DTIMING4_TXP		(0x7 << 4)
+#define DDRC_DTIMING4_TXP_SHIFT		4
+#define DDRC_DTIMING4_TMRD		(0x3 << 0)
+#define DDRC_DTIMING4_TMRD_SHIFT	0
+
+/* DTIMING5 */
+#define DDRC_DTIMING5_TCTLUPD		(0xff << 24)
+#define DDRC_DTIMING5_TCTLUPD_SHIFT	24
+#define DDRC_DTIMING5_TRTW		(0x3f << 16)
+#define DDRC_DTIMING5_TRTW_SHIFT	16
+#define DDRC_DTIMING5_TRDLAT		(0x3f << 8)
+#define DDRC_DTIMING5_TRDLAT_SHIFT	8
+#define DDRC_DTIMING5_TWDLAT		(0x3f << 0)
+#define DDRC_DTIMING5_TWDLAT_SHIFT	0
+
+/* DTIMING6 */
+#define DDRC_DTIMING6_TXSRD		(0xff << 24)
+#define DDRC_DTIMING6_TXSRD_SHIFT	24
+#define DDRC_DTIMING6_TFAW		(0x3f << 16)
+#define DDRC_DTIMING6_TFAW_SHIFT	16
+#define DDRC_DTIMING6_TCFGW		(0x3f << 8)
+#define DDRC_DTIMING6_TCFGW_SHIFT	8
+#define DDRC_DTIMING6_TCFGR		(0x3f << 0)
+#define DDRC_DTIMING6_TCFGR_SHIFT	0
+
+#endif /* __COMMON_DDR_CONTROLLER_H__ */

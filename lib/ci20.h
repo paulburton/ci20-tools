@@ -75,6 +75,8 @@ extern int ci20_pll_init(struct ci20_dev *dev, enum ci20_pll pll, unsigned m, un
 extern int ci20_mux_cpu_clk(struct ci20_dev *dev, enum ci20_cpu_clk clk);
 extern int ci20_mux_ddr_clk(struct ci20_dev *dev, enum ci20_ddr_clk clk, unsigned div);
 
+extern int ci20_ddr_init(struct ci20_dev *dev, unsigned hz);
+
 extern int ci20_dcache_init(struct ci20_dev *dev);
 extern int ci20_icache_init(struct ci20_dev *dev);
 
