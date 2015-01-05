@@ -500,8 +500,12 @@ static void handle_oep_interrupt(void)
 		ep_intr = read_doep_int(ep);
 		intrs &= ~(1 << ep);
 
-		if (ep_intr & DEP_XFER_COMP)
+		if (ep_intr & DEP_XFER_COMP) {
 			set_doep_int(ep, DEP_XFER_COMP);
+
+			if (out_data.size)
+				set_doep_ctl(ep, DEP_ENA_BIT | DEP_CLEAR_NAK);
+		}
 
 		if (ep_intr & DEP_SETUP_PHASE_DONE) {
 			set_doep_int(ep, DEP_SETUP_PHASE_DONE);
