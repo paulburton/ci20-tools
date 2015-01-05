@@ -74,7 +74,7 @@ static union {
 	} jump;
 } cmd_data;
 
-static int cmd;
+static int cmd = -1, prev_cmd = -1;
 
 static const char cpu_info[8] __attribute__((aligned(4))) = FW_CPU_INFO;
 
@@ -267,6 +267,26 @@ static void handle_vendor_request(void)
 
 		cmd_data.jump.addr = u32val;
 		break;
+
+	case FW_REQ_BULK_LENGTH:
+		debug("BULK_LENGTH len=0x");
+		debug_hex(u32val, 8);
+		debug("\r\n");
+
+		switch (prev_cmd) {
+		case FW_REQ_MEM_READ:
+			in_data.size = u32val;
+			break;
+
+		case FW_REQ_MEM_WRITE:
+			out_data.size = u32val;
+			break;
+
+		default:
+			debug("   INVALID!\r\n");
+			break;
+		}
+		break;
 	}
 }
 
@@ -276,6 +296,7 @@ static void handle_setup_packet(unsigned ep)
 	unsigned type = (setup_packet.bmRequestType >> 5) & 0x3;
 	unsigned pkt_cnt;
 
+	prev_cmd = cmd;
 	cmd = -1;
 
 	switch (type) {
