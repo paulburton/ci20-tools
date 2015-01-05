@@ -182,7 +182,7 @@ static void handle_vendor_request(void)
 		cmd_data.mem_set.base = (void *)u32val;
 
 		debug("MEM_SET addr=0x");
-		debug_hex((uint32_t)out_data.data, 8);
+		debug_hex((uint32_t)cmd_data.mem_set.base, 8);
 		debug("\r\n");
 		break;
 
