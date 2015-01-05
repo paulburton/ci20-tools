@@ -199,20 +199,45 @@ int ci20_usb_readmem(struct ci20_usb_dev *dev, void *buf, size_t sz, uint32_t ad
 
 int ci20_usb_writemem(struct ci20_usb_dev *dev, const void *buf, size_t sz, uint32_t addr)
 {
-	const unsigned max = 64;
-	int err;
+	const unsigned ctl_data_max = 64;
+	const unsigned bulk_data_max = 1 << 16;
+	uint16_t ctl_data_len = 0;
+	unsigned char *ctl_data = NULL;
+	int err, transferred;
+
+	if (sz <= ctl_data_max) {
+		ctl_data = (unsigned char *)buf;
+		ctl_data_len = sz;
+	}
 
 	err = libusb_control_transfer(dev->hnd,
 		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-		FW_REQ_MEM_WRITE, addr >> 16, addr, (unsigned char *)buf, min(sz, max),
-		dev->timeout);
+		FW_REQ_MEM_WRITE, addr >> 16, addr, ctl_data, ctl_data_len, dev->timeout);
 	if (err < 0)
 		return err;
-	if (err != min(sz, max))
+	if (err != ctl_data_len)
 		return -EIO;
 
-	if (sz > max)
-		return ci20_usb_writemem(dev, buf + max, sz - max, addr + max);
+	if (sz <= ctl_data_max)
+		return 0;
+
+	err = libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_BULK_LENGTH, sz >> 16, sz, NULL, 0, dev->timeout);
+	if (err)
+		return err;
+
+	while (sz) {
+		err = libusb_bulk_transfer(dev->hnd, LIBUSB_ENDPOINT_OUT | 0x1,
+					   (unsigned char *)buf, min(sz, bulk_data_max),
+					   &transferred, dev->timeout);
+
+		if (err && (err != LIBUSB_ERROR_TIMEOUT))
+			return err;
+
+		buf += transferred;
+		sz -= transferred;
+	}
 
 	return 0;
 }
