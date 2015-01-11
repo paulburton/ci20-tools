@@ -239,3 +239,8 @@ int ci20_jump(struct ci20_dev *dev, uint32_t addr)
 {
 	return ci20_usb_jump(dev->usb_dev, addr);
 }
+
+int ci20_uart_init(struct ci20_dev *dev, unsigned uart, unsigned baud)
+{
+	return ci20_usb_uart_init(dev->usb_dev, uart, baud);
+}

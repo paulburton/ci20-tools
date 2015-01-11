@@ -354,3 +354,13 @@ int ci20_usb_jump(struct ci20_usb_dev *dev, uint32_t addr)
 		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
 		FW_REQ_JUMP, addr >> 16, addr, NULL, 0, dev->timeout);
 }
+
+int ci20_usb_uart_init(struct ci20_usb_dev *dev, unsigned uart, unsigned baud)
+{
+	if (baud % 100)
+		return -EINVAL;
+
+	return libusb_control_transfer(dev->hnd,
+		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		FW_REQ_UART_INIT, uart, baud / 100, NULL, 0, dev->timeout);
+}
