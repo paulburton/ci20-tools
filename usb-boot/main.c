@@ -137,6 +137,14 @@ int main(int argc, char *argv[])
 	}
 	printf(" done\n");
 
+	printf("Initialising UART...");
+	err = ci20_uart_init(dev, 4, 115200);
+	if (err) {
+		printf(" failed!\n");
+		return EXIT_FAILURE;
+	}
+	printf(" done\n");
+
 	printf("Jumping to kernel at 0x%08" PRIx32 "...", entry);
 	err = ci20_jump(dev, entry);
 	if (err) {
