@@ -10,10 +10,12 @@
 #ifndef __COMMON_DISCOVER_H__
 #define __COMMON_DISCOVER_H__
 
+#include <stdbool.h>
+
 extern struct ci20_ctx *ctx;
 extern struct ci20_dev *dev;
 extern struct ci20_otp otp;
 
-extern int common_init(int serial);
+extern int common_init(int serial, bool wait);
 
 #endif /* __COMMON_DISCOVER_H__ */

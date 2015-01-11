@@ -44,7 +44,7 @@ static void discover_cb(struct ci20_ctx *c, struct ci20_dev *_dev, void *user)
 	dev = _dev;
 }
 
-int common_init(int serial)
+int common_init(int serial, bool wait)
 {
 	ctx = ci20_init();
 	if (!ctx) {
@@ -52,7 +52,9 @@ int common_init(int serial)
 		return EXIT_FAILURE;
 	}
 
-	ci20_discover(ctx, discover_cb, &serial);
+	do {
+		ci20_discover(ctx, discover_cb, &serial);
+	} while (!dev && wait);
 
 	if (!dev) {
 		fprintf(stderr, "CI20 not found\n");

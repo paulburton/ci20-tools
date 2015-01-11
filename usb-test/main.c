@@ -26,15 +26,18 @@ static void usage(FILE *f)
 	fprintf(f, "\n");
 	fprintf(f, "  --help                 Display this message and exit\n");
 	fprintf(f, "  --serial=<sn>          Use the board with this serial number\n");
+	fprintf(f, "  --wait                 Wait if the board is not present\n");
 }
 
 int main(int argc, char *argv[])
 {
 	unsigned i;
 	int err, ch, serial = -1;
+	bool wait = false;
 	struct option options[] = {
 		{ "help", no_argument, NULL, 'h' },
 		{ "serial", required_argument, NULL, 's' },
+		{ "wait", no_argument, NULL, 'w' },
 		{ NULL, 0, NULL, 0 },
 	};
 
@@ -50,6 +53,10 @@ int main(int argc, char *argv[])
 			serial = atoi(optarg);
 			break;
 
+		case 'w':
+			wait = true;
+			break;
+
 		case '?':
 		case ':':
 			usage(stderr);
@@ -57,7 +64,7 @@ int main(int argc, char *argv[])
 		}
 	} while (ch != -1);
 
-	err = common_init(serial);
+	err = common_init(serial, wait);
 	if (err)
 		return err;
 
