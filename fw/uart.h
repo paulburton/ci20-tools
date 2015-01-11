@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-extern void uart_init(void);
+extern void uart_init(unsigned uart, unsigned baud);
 extern void uart_putc(char c);
 extern void uart_puts(const char *s);
 extern void uart_putx(uint32_t x, unsigned digits);

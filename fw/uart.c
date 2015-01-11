@@ -14,9 +14,9 @@
 #include "io.h"
 #include "uart.h"
 
-static const void *uart_base = (void *)0xb0034000;
+static void *uart_base;
+static unsigned uart_baud;
 static const unsigned uart_clk = 48000000;
-static const unsigned uart_baud = 115200;
 
 #define UART_GEN_ACCESSORS(idx, name)			\
 static inline uint8_t read_##name(void)			\
@@ -57,9 +57,12 @@ UART_GEN_ACCESSORS(7, spr)
 #define LSR_THRE	(1 << 5)
 #define LSR_TEMT	(1 << 6)
 
-void uart_init(void)
+void uart_init(unsigned uart, unsigned baud)
 {
 	unsigned divisor = (uart_clk + (uart_baud * (16 / 2))) / (16 * uart_baud);
+
+	uart_base = (void *)(0xb0030000 + (uart * 0x1000));
+	uart_baud = baud;
 
 	/* mux pins */
 	write_pxintc(2, 0x100400);
