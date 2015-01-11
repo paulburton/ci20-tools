@@ -29,6 +29,7 @@ enum {
 	FW_REQ_MTC0,
 	FW_REQ_JUMP,
 	FW_REQ_BULK_LENGTH,
+	FW_REQ_UART_INIT,
 };
 
 struct ci20_fw_mem_set {

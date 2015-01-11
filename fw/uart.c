@@ -59,10 +59,11 @@ UART_GEN_ACCESSORS(7, spr)
 
 void uart_init(unsigned uart, unsigned baud)
 {
-	unsigned divisor = (uart_clk + (uart_baud * (16 / 2))) / (16 * uart_baud);
+	unsigned divisor;
 
 	uart_base = (void *)(0xb0030000 + (uart * 0x1000));
 	uart_baud = baud;
+	divisor = (uart_clk + (uart_baud * (16 / 2))) / (16 * uart_baud);
 
 	/* mux pins */
 	write_pxintc(2, 0x100400);

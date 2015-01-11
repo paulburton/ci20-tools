@@ -140,6 +140,7 @@ static void handle_standard_request(void)
 static void handle_vendor_request(void)
 {
 	uint32_t u32val;
+	unsigned baud;
 
 	cmd = setup_packet.bRequest;
 
@@ -286,6 +287,18 @@ static void handle_vendor_request(void)
 			debug("   INVALID!\r\n");
 			break;
 		}
+		break;
+
+	case FW_REQ_UART_INIT:
+		baud = setup_packet.wIndex * 100;
+
+		debug("UART_INIT uart=0x");
+		debug_hex(setup_packet.wValue, 0);
+		debug(" baud=0x");
+		debug_hex(baud, 0);
+		debug("\r\n");
+
+		uart_init(setup_packet.wValue, baud);
 		break;
 	}
 }
