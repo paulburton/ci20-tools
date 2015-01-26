@@ -83,6 +83,11 @@ int ci20_readmem(struct ci20_dev *dev, void *buf, size_t sz, uint32_t addr)
 	return ci20_usb_readmem(dev->usb_dev, buf, sz, addr);
 }
 
+int ci20_readb(struct ci20_dev *dev, uint8_t *val, uint32_t addr)
+{
+	return ci20_readmem(dev, val, sizeof(*val), addr);
+}
+
 int ci20_readl(struct ci20_dev *dev, uint32_t *val, uint32_t addr)
 {
 	return ci20_readmem(dev, val, sizeof(*val), addr);
@@ -91,6 +96,11 @@ int ci20_readl(struct ci20_dev *dev, uint32_t *val, uint32_t addr)
 int ci20_writemem(struct ci20_dev *dev, const void *buf, size_t sz, uint32_t addr)
 {
 	return ci20_usb_writemem(dev->usb_dev, buf, sz, addr);
+}
+
+int ci20_writeb(struct ci20_dev *dev, uint8_t val, uint32_t addr)
+{
+	return ci20_writemem(dev, &val, sizeof(val), addr);
 }
 
 int ci20_writel(struct ci20_dev *dev, uint32_t val, uint32_t addr)

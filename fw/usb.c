@@ -382,16 +382,23 @@ static void read_out_data(unsigned ep, unsigned sz)
 	while (dwords--) {
 		val = read_ep_fifo(ep);
 
-		debug("<< 0x");
-		debug_hex(val, 8);
-		debug("\r\n");
-
 		if (out_data.size >= 4) {
+			debug("<< 0x");
+			debug_hex(val, 8);
+			debug("\r\n");
+
 			*((volatile uint32_t *)out_data.data) = val;
 			out_data.data += 4;
 			out_data.size -= 4;
-		} else {
-			/* TODO */
+		} else while (out_data.size > 0) {
+			debug("<< 0x");
+			debug_hex(val & 0xff, 2);
+			debug("\r\n");
+
+			*((volatile uint8_t *)out_data.data) = val;
+			val >>= 8;
+			out_data.data++;
+			out_data.size--;
 		}
 	}
 
@@ -451,8 +458,8 @@ static void handle_rxflvl_interrupt(void)
 static void handle_iep_interrupt(void)
 {
 	uint16_t intrs = read_otg_daint() & 0xffff;
-	uint32_t ep_intr, txstatus;
-	unsigned ep, xfersize, dwords, i, xfered;
+	uint32_t ep_intr, txstatus, short_data;
+	unsigned ep, xfersize, dwords, xfered;
 
 	while (intrs) {
 		ep = 31 - clz(intrs);
@@ -475,18 +482,41 @@ static void handle_iep_interrupt(void)
 			if (txstatus < dwords)
 				break;
 
-			for (i = 0; i < dwords; i++) {
-				volatile uint32_t *ptr = &(((uint32_t *)in_data.data)[i]);
+			while (xfersize >= 4) {
+				volatile uint32_t *ptr = (uint32_t *)in_data.data;
 				uint32_t val = *ptr;
+
 				debug(">> 0x");
 				debug_hex(val, 8);
 				debug("\r\n");
 				write_ep_fifo(ep, val);
+
+				in_data.data += 4;
+				in_data.size -= 4;
+				xfered += 4;
+				xfersize -= 4;
 			}
 
-			in_data.size -= xfersize;
-			in_data.data += xfersize;
-			xfered += xfersize;
+			if (!xfersize)
+				break;
+
+			short_data = 0;
+			while (xfersize > 0) {
+				volatile uint8_t *ptr = (uint8_t *)in_data.data;
+
+				short_data <<= 8;
+				short_data |= *ptr;
+
+				in_data.data++;
+				in_data.size--;
+				xfered++;
+				xfersize--;
+			}
+
+			debug(">> 0x");
+			debug_hex(short_data, (xfered % 4) * 2);
+			debug("\r\n");
+			write_ep_fifo(ep, short_data);
 		}
 
 		set_diep_int(ep, DEP_TXFIFO_EMPTY);

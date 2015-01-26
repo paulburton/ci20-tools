@@ -60,9 +60,11 @@ extern void ci20_fini(struct ci20_ctx *c);
 extern int ci20_discover(struct ci20_ctx *c, void (*cb)(struct ci20_ctx *c, struct ci20_dev *dev, void *user), void *user);
 
 extern int ci20_readmem(struct ci20_dev *dev, void *buf, size_t sz, uint32_t addr);
+extern int ci20_readb(struct ci20_dev *dev, uint8_t *val, uint32_t addr);
 extern int ci20_readl(struct ci20_dev *dev, uint32_t *val, uint32_t addr);
 
 extern int ci20_writemem(struct ci20_dev *dev, const void *buf, size_t sz, uint32_t addr);
+extern int ci20_writeb(struct ci20_dev *dev, uint8_t val, uint32_t addr);
 extern int ci20_writel(struct ci20_dev *dev, uint32_t val, uint32_t addr);
 
 extern int ci20_memset(struct ci20_dev *dev, uint32_t addr, uint8_t c, size_t n);
