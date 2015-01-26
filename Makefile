@@ -47,4 +47,5 @@ include fw/Makefile
 include lib/Makefile
 include usb-common/Makefile
 include usb-boot/Makefile
+include usb-nand/Makefile
 include usb-test/Makefile
