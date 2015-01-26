@@ -7,6 +7,8 @@
  * published by the Free Software Foundation.
  */
 
+#include <errno.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -146,7 +148,10 @@ int ci20_read_otp(struct ci20_dev *dev, struct ci20_otp *otp)
 
 int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20_pin_func func)
 {
+	bool pull = !(func & PIN_PULL_DISABLE);
 	int err;
+
+	func &= ~PIN_PULL_DISABLE;
 
 	/* PxINTC */
 	err = ci20_writel(dev, 1 << pin, 0xb0010018 + (port * 0x100));
@@ -168,6 +173,9 @@ int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20
 		/* PxMSKS */
 		err = ci20_writel(dev, 1 << pin, 0xb0010024 + (port * 0x100));
 		break;
+
+	default:
+		return -EINVAL;
 	}
 	if (err)
 		return err;
@@ -187,6 +195,9 @@ int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20
 		/* PxPAT1S */
 		err = ci20_writel(dev, 1 << pin, 0xb0010034 + (port * 0x100));
 		break;
+
+	default:
+		return -EINVAL;
 	}
 	if (err)
 		return err;
@@ -209,7 +220,17 @@ int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20
 	case PIN_GPIO_IN:
 		/* don't care */
 		break;
+
+	default:
+		return -EINVAL;
 	}
+	if (err)
+		return err;
+
+	if (pull)
+		err = ci20_writel(dev, 1 << pin, 0xb0010078 + (port * 0x100));
+	else
+		err = ci20_writel(dev, 1 << pin, 0xb0010074 + (port * 0x100));
 
 	return err;
 }

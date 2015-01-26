@@ -32,6 +32,7 @@ enum ci20_pin_func {
 	PIN_GPIO_IN,
 	PIN_GPIO_OUT_LOW,
 	PIN_GPIO_OUT_HIGH,
+	PIN_PULL_DISABLE	= (1 << 31),
 };
 
 enum ci20_pll {
