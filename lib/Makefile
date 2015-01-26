@@ -13,6 +13,7 @@ source_files := \
 	ci20.c \
 	ddr.c \
 	elf.c \
+	nand.c \
 	pll.c \
 	usb.c
 

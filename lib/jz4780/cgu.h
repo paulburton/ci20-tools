@@ -66,6 +66,7 @@ CGU_GEN_ACCESSORS(0xd4, cpcsr)
 /* CLKGR0 */
 #define CGU_CLKGR0_DDR1			(1 << 31)
 #define CGU_CLKGR0_DDR0			(1 << 30)
+#define CGU_CLKGR0_NEMC			(1 << 0)
 
 /* CPxPCR */
 #define CGU_CPXPCR_M			(0x1fff << 19)

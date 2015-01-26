@@ -10,6 +10,8 @@
 #ifndef __LIB_UTIL_H__
 #define __LIB_UTIL_H__
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+
 #define DIV_ROUND_UP(n, d) ({	\
 	typeof(n) _n = (n);	\
 	typeof(d) _d = (d);	\

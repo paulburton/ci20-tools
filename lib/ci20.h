@@ -100,6 +100,9 @@ extern int ci20_jump(struct ci20_dev *dev, uint32_t addr);
 
 extern int ci20_uart_init(struct ci20_dev *dev, unsigned uart, unsigned baud);
 
+extern int ci20_nand_init(struct ci20_dev *dev);
+extern int ci20_nand_id(struct ci20_dev *dev, unsigned char id[static 6]);
+
 /**
  * ci20_manufacturer_long - retrieve long manufacturer name from short
  * @mfr: The short manufacturer name, as read from the OTP.
