@@ -153,8 +153,22 @@ int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20
 	if (err)
 		return err;
 
-	/* PxMSKC */
-	err = ci20_writel(dev, 1 << pin, 0xb0010018 + (port * 0x100));
+	switch (func) {
+	case PIN_DEVICE0:
+	case PIN_DEVICE1:
+	case PIN_DEVICE2:
+	case PIN_DEVICE3:
+		/* PxMSKC */
+		err = ci20_writel(dev, 1 << pin, 0xb0010028 + (port * 0x100));
+		break;
+
+	case PIN_GPIO_IN:
+	case PIN_GPIO_OUT_LOW:
+	case PIN_GPIO_OUT_HIGH:
+		/* PxMSKS */
+		err = ci20_writel(dev, 1 << pin, 0xb0010024 + (port * 0x100));
+		break;
+	}
 	if (err)
 		return err;
 
