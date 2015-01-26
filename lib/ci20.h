@@ -73,6 +73,7 @@ extern int ci20_memset(struct ci20_dev *dev, uint32_t addr, uint8_t c, size_t n)
 extern int ci20_read_otp(struct ci20_dev *dev, struct ci20_otp *otp);
 
 extern int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20_pin_func func);
+extern int ci20_pin_level(struct ci20_dev *dev, unsigned port, unsigned pin, int *level);
 
 extern int ci20_pll_init(struct ci20_dev *dev, enum ci20_pll pll, unsigned m, unsigned n, unsigned od);
 extern int ci20_mux_cpu_clk(struct ci20_dev *dev, enum ci20_cpu_clk clk);

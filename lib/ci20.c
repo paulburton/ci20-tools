@@ -235,6 +235,19 @@ int ci20_pin_config(struct ci20_dev *dev, unsigned port, unsigned pin, enum ci20
 	return err;
 }
 
+int ci20_pin_level(struct ci20_dev *dev, unsigned port, unsigned pin, int *level)
+{
+	uint32_t val;
+	int err;
+
+	err = ci20_readl(dev, &val, 0xb0010000 + (port * 0x100));
+	if (err)
+		return err;
+
+	*level = (val >> pin) & 0x1;
+	return 0;
+}
+
 int ci20_dcache_init(struct ci20_dev *dev)
 {
 	return ci20_usb_dcache_init(dev->usb_dev);
