@@ -30,7 +30,8 @@ int ci20_usb_init(struct ci20_usb_ctx *usb)
 	if (err)
 		return err;
 
-	libusb_set_debug(usb->ctx, LIBUSB_LOG_LEVEL_WARNING);
+	libusb_set_option(usb->ctx, LIBUSB_OPTION_LOG_LEVEL,
+			  LIBUSB_LOG_LEVEL_WARNING);
 
 	return 0;
 }
