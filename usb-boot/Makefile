@@ -25,7 +25,7 @@ $(local_out)/ci20-usb-boot: libs := $(libs)
 $(local_out)/ci20-usb-boot: $(objs) $(ci20_lib) $(common_lib)
 	@mkdir -p $(dir $@)
 	@echo "CCLD    $@"
-	$(SILENT)$(CC) $(LDFLAGS) $(libs) -o $@ $(objs) $(common_lib)
+	$(SILENT)$(CC) -o $@ $(objs) $(common_lib) $(LDFLAGS)  $(libs)
 
 $(objs): $$(patsubst $(local_out)/%.o,usb-boot/%.c,$$@) Makefile usb-boot/Makefile
 	@mkdir -p $(dir $@)

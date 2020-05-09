@@ -35,7 +35,7 @@ $(ci20_lib): libs := $(libs)
 $(ci20_lib): $(objs) $(fw_bin)
 	@mkdir -p $(dir $@)
 	@echo "CCLD    $@"
-	$(SILENT)$(CC) $(LDFLAGS) $(libs) -shared -o $@ $(objs) -Wl,--format=binary $(fw_bin) -Wl,--format=default
+	$(SILENT)$(CC) -shared -o $@ $(objs) -Wl,--format=binary $(fw_bin) -Wl,--format=default $(LDFLAGS) $(libs)
 
 $(objs): flags := $(flags)
 $(objs): $$(patsubst $(local_out)/%.o,lib/%.c,$$@) Makefile lib/Makefile
